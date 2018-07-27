@@ -1,5 +1,4 @@
 import jwt
-import logging
 import os
 import json
 from datetime import datetime, timedelta
@@ -23,7 +22,6 @@ def verify_client(self, client):
                 if 'client_id' in client_info:
                     client_id = client_info['client_id']
                     obj_client = client.query(client.client_id == client_id).get()
-                    logging.warning("Client: %s" % obj_client)
 
                     if obj_client:
                         decoded_token = verify_jwt_flask(
@@ -65,7 +63,7 @@ def verify_client(self, client):
 def verify_user(self, user):
     if self:
         if issubclass(self.__class__, Resource):
-            logging.warning('verifying user requests')
+
             if 'Authorization' in request.headers:
                 authorization_header = request.headers.get('Authorization')
                 inbound_app_id = authorization_header.split(' ')[1]
@@ -109,11 +107,9 @@ def verify_jwt_flask(token, secret, verify_exp=True):
         return decoded_token
     except jwt.exceptions.ExpiredSignatureError, e:
         msg = "Error: %s - %s" % (e.__class__, e.message)
-        logging.warning(msg)
         abort(403, message=e.message)
 
     except jwt.InvalidTokenError, e:
-        logging.warning("Error in JWT token: %s" % e)
         return False
 
 
